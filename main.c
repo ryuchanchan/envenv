@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 char *expand_env(char *str)
 {
@@ -57,19 +58,24 @@ char *expand_env(char *str)
 }
 
 
-int main(int argc, char **argv)
+int main(int argc, char **argv, char **envp)
 {
     char *str;
+    char *args[3];
     int i;
 
     i = 1;
     while (i < argc)
     {
         str = expand_env(argv[i]);
-        printf("%s ", str);
+        args[0] = "/bin/echo";
+        args[1] = str;
+        args[2] = NULL;
+        execve(args[0], args, envp);
+        // printf("%s ", str);
         free(str);
         i++;
     }
-    printf("\n");
+    // printf("\n");
     return 0;
 }
